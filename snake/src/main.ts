@@ -1,8 +1,36 @@
-import './style.css'
+import Phaser from 'phaser';
+class Main extends Phaser.Scene {
+  constructor() {
+    super('main');
+  }
 
-const app = document.querySelector<HTMLDivElement>('#app')!
+  // Preload 
+  preload() {
+    this.load.image('square', './assets/sprite/character/square.png');
+  }
 
-app.innerHTML = `
-  <h1>Hello Vite!</h1>
-  <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-`
+  // Create 
+  create() {
+    this.add.image(100, 100, 'square');
+  }
+  
+  // Update 
+  update() {
+
+  }
+  
+}
+
+export default Main;
+
+// Config 
+const config = {
+  type: Phaser.AUTO,
+  backgroundColor: '#ff00ff',
+  width: 800,
+  height: 600,
+  scene: Main
+};
+
+const game = new Phaser.Game(config);
+
