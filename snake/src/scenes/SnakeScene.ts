@@ -4,36 +4,30 @@ export default class SnakeScene extends Phaser.Scene
 {
 	constructor()
 	{
-		super('snake')
+		super('snake');
 	}
 
+    // Preload 
 	preload()
     {
-        this.load.setBaseURL('http://labs.phaser.io')
-
-        this.load.image('sky', 'assets/skies/space3.png')
-        this.load.image('logo', 'assets/sprites/phaser3-logo.png')
-        this.load.image('red', 'assets/particles/red.png')
+        // Phaser's Assets -> https://labs.phaser.io/assets/ 
+        // this.load.setBaseURL('http://labs.phaser.io');
+        this.load.image('background', './assets/image/background/Balloon_Sky.jpeg');
+        this.load.image('square', './assets/sprite/character/square.png');
+        
     }
 
+    // Create 
     create()
     {
-        this.add.image(400, 300, 'sky')
+        this.add.image(200, 200, 'background');
 
-        const particles = this.add.particles('red')
+        const squareSprite = this.add.sprite(100, 100, 'square');
+    }
 
-        const emitter = particles.createEmitter({
-            speed: 100,
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        })
+    // Update 
+    update()
+    {
 
-        const logo = this.physics.add.image(400, 100, 'logo')
-
-        logo.setVelocity(100, 200)
-        logo.setBounce(1, 1)
-        logo.setCollideWorldBounds(true)
-
-        emitter.startFollow(logo)
     }
 }
