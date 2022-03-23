@@ -1,10 +1,10 @@
 import Phaser from 'phaser'
 
-export default class HelloWorldScene extends Phaser.Scene
+export default class SnakeScene extends Phaser.Scene
 {
 	constructor()
 	{
-		super('hello-world')
+		super('snake')
 	}
 
 	preload()
