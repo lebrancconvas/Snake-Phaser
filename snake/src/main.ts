@@ -1,36 +1,18 @@
-import Phaser from 'phaser';
-class Main extends Phaser.Scene {
-  constructor() {
-    super('main');
-  }
+import Phaser from 'phaser'
 
-  // Preload 
-  preload() {
-    this.load.image('square', './assets/sprite/character/square.png');
-  }
+import HelloWorldScene from './scenes/HelloWorldScene'
 
-  // Create 
-  create() {
-    this.add.image(100, 100, 'square');
-  }
-  
-  // Update 
-  update() {
-
-  }
-  
+const config: Phaser.Types.Core.GameConfig = {
+	type: Phaser.AUTO,
+	width: 800,
+	height: 600,
+	physics: {
+		default: 'arcade',
+		arcade: {
+			gravity: { y: 200 }
+		}
+	},
+	scene: [HelloWorldScene]
 }
 
-export default Main;
-
-// Config 
-const config = {
-  type: Phaser.AUTO,
-  backgroundColor: '#ff00ff',
-  width: 800,
-  height: 600,
-  scene: Main
-};
-
-const game = new Phaser.Game(config);
-
+export default new Phaser.Game(config)
