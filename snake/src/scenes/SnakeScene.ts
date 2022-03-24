@@ -9,6 +9,7 @@ export default class SnakeScene extends Phaser.Scene
     private foodSprite?;
     private cursorKeys!: Phaser.Types.Input.Keyboard.CursorKeys;
     private score: number = 0;
+    private scoreLabel;
 
 	constructor()
 	{
@@ -20,7 +21,7 @@ export default class SnakeScene extends Phaser.Scene
     // Preload 
 	preload()
     {
-
+        this.load.bitmapFont("pixelFont", "./assets/font/Zuno/font.png", "./assets/font/Zuno/font.xml");
     }
 
     // Create 
@@ -28,7 +29,7 @@ export default class SnakeScene extends Phaser.Scene
     {
         this.score = 0;
 
-        this.add.rectangle(0, 640, 1600, 80, 0xc0c0c0);
+        this.add.rectangle(0, 640, 1600, 80, 0xc0a0c0);
 
         const foodX: number = Phaser.Math.Between(10, 790);
         const foodY: number = Phaser.Math.Between(10, 590);
@@ -38,6 +39,8 @@ export default class SnakeScene extends Phaser.Scene
 
         this.physics.add.existing(this.squareSprite);
         this.physics.add.existing(this.foodSprite);
+
+        this.scoreLabel = this.add.bitmapText(30, 610, "pixelFont", "Score: ", 30);
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
 
