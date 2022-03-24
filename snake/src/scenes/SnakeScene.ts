@@ -5,11 +5,13 @@ import { Config } from '../settings/Config';
 export default class SnakeScene extends Phaser.Scene
 {
     // Variable Init 
-    private squareSprite?;
-    private foodSprite?;
-    private cursorKeys!: Phaser.Types.Input.Keyboard.CursorKeys;
-    private score: number = 0;
-    private scoreLabel;
+    squareSprite;
+    foodSprite;
+    cursorKeys!: Phaser.Types.Input.Keyboard.CursorKeys;
+    score!: number;
+    scoreLabel!: Phaser.GameObjects.BitmapText;
+    eatingSound!: Phaser.Sound.BaseSound;
+    audioConfig;
 
 	constructor()
 	{
@@ -22,12 +24,25 @@ export default class SnakeScene extends Phaser.Scene
 	preload()
     {
         this.load.bitmapFont("pixelFont", "./assets/font/Zuno/font.png", "./assets/font/Zuno/font.xml");
+        this.load.audio("eating", "./assets/audio/sfx/Collect_02.mp3");
     }
 
     // Create 
     create()
     {
         this.score = 0;
+
+        this.audioConfig = {
+            mute: false,
+            volume: 0.5,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
+
+        this.eatingSound = this.sound.add('eating');
 
         this.add.rectangle(0, 640, 1600, 80, 0xc0a0c0);
 
@@ -40,11 +55,26 @@ export default class SnakeScene extends Phaser.Scene
         this.physics.add.existing(this.squareSprite);
         this.physics.add.existing(this.foodSprite);
 
-        this.scoreLabel = this.add.bitmapText(30, 610, "pixelFont", "Score: ", 30);
+        this.scoreLabel = this.add.bitmapText(30, 610, "pixelFont", `Score: ${this.score}`, 30);
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
 
-        this.physics.add.collider(this.squareSprite, this.foodSprite, this.generateNewFood);
+        this.physics.add.collider(this.squareSprite, this.foodSprite, (squareSprite, foodSprite) => {
+            this.squareSprite = squareSprite;
+            this.foodSprite = foodSprite;
+
+            const newFoodX: number = Phaser.Math.Between(10, 790);
+            const newFoodY: number = Phaser.Math.Between(10, 590);
+        
+            this.foodSprite.x = newFoodX;
+            this.foodSprite.y = newFoodY;
+
+            this.eatingSound.play(this.audioConfig);
+
+            this.score++;
+
+            this.scoreLabel.text = `Score: ${this.score}`;
+        });
     }
 
     // Update 
@@ -81,13 +111,17 @@ export default class SnakeScene extends Phaser.Scene
 
     generateNewFood(squareSprite, foodSprite) 
     {
-        // RNG 
+        this.squareSprite = squareSprite;
+        this.foodSprite = foodSprite;
+
         const newFoodX: number = Phaser.Math.Between(10, 790);
         const newFoodY: number = Phaser.Math.Between(10, 590);
-        
-        foodSprite.x = newFoodX;
-        foodSprite.y = newFoodY;
+    
+        this.foodSprite.x = newFoodX;
+        this.foodSprite.y = newFoodY;
 
-        console.log(this.score);
+        this.score++;
+
+        // console.log(this.score);
     }
 }
