@@ -28,7 +28,7 @@ export default class SnakeScene extends Phaser.Scene
     {
         this.score = 0;
 
-        // this.add.rectangle(0, 640, 1600, 80, 0xc0c0c0);
+        this.add.rectangle(0, 640, 1600, 80, 0xc0c0c0);
 
         const foodX: number = Phaser.Math.Between(10, 790);
         const foodY: number = Phaser.Math.Between(10, 590);
