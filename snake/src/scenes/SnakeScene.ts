@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { GameSettings } from '../settings/GameSettings';
+import { Config } from '../settings/Config';
 
 export default class SnakeScene extends Phaser.Scene
 {
@@ -7,46 +8,49 @@ export default class SnakeScene extends Phaser.Scene
     private squareSprite?;
     private foodSprite?;
     private cursorKeys!: Phaser.Types.Input.Keyboard.CursorKeys;
+    private score: number = 0;
 
 	constructor()
 	{
 		super('snake');
 	}
 
+    /* Game Logic */
+
     // Preload 
 	preload()
     {
-        // Phaser's Assets -> https://labs.phaser.io/assets/ 
-        // this.load.setBaseURL('http://labs.phaser.io');
-        // this.load.image('background', './assets/image/background/Balloon_Sky.jpeg');
-        // this.load.image('square', './assets/sprite/character/square.png');
-        
+
     }
 
     // Create 
     create()
     {
-        // this.add.image(200, 200, 'background');
-        const foodX = Math.floor(Math.random() * 790) + 10;
-        const foodY = Math.floor(Math.random() * 590) + 10;
+        this.score = 0;
+
+        // this.add.rectangle(0, 640, 1600, 80, 0xc0c0c0);
+
+        const foodX: number = Phaser.Math.Between(10, 790);
+        const foodY: number = Phaser.Math.Between(10, 590);
+
         this.squareSprite = this.add.rectangle(80, 80, 20, 20, 0x00f0ff);
-        // x: [10, 790] / y: [10, 590]
-        this.foodSprite = this.add.rectangle(foodX, foodY, 20, 20, 0x00ff00);
+        this.foodSprite = this.add.rectangle(foodX, foodY, 14, 14, 0x00ff00);
+
+        this.physics.add.existing(this.squareSprite);
+        this.physics.add.existing(this.foodSprite);
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
 
-        // this.physics.add.collider(this.squareSprite, this.foodSprite, function(squareSprite, foodSprite) {
-        //     foodSprite.destroy();
-        //     // foodSprite = this.add.rectangle(foodX, foodY, 20, 20, 0x00ff00);
-        // })   
+        this.physics.add.collider(this.squareSprite, this.foodSprite, this.generateNewFood);
     }
 
     // Update 
     update()
     {
-        this.playerMove(GameSettings.playerSpeed);  
-         
+        this.playerMove(GameSettings.playerSpeed);
     }
+
+    /* Method */
 
     playerMove(speed: number) 
     {
@@ -72,24 +76,15 @@ export default class SnakeScene extends Phaser.Scene
         }
     }
 
-    generateNewFood() 
+    generateNewFood(squareSprite, foodSprite) 
     {
-        const foodX = Phaser.Math.Between(10, 790);
-        const foodY = Phaser.Math.Between(10, 590);
+        // RNG 
+        const newFoodX: number = Phaser.Math.Between(10, 790);
+        const newFoodY: number = Phaser.Math.Between(10, 590);
+        
+        foodSprite.x = newFoodX;
+        foodSprite.y = newFoodY;
 
-        if(this.isFoodEaten()) 
-        {
-            this.foodSprite.destroy();
-            this.foodSprite = this.add.rectangle(foodX, foodY, 20, 20, 0x00ff00);
-        }
-    }
-
-    isFoodEaten(): boolean 
-    {
-        if(this.squareSprite.y === this.foodSprite.x && this.squareSprite.y === this.foodSprite.y) 
-        {
-            return true;
-        }
-        return false;
+        console.log(this.score);
     }
 }
