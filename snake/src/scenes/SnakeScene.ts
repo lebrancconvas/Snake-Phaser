@@ -44,9 +44,11 @@ export default class SnakeScene extends Phaser.Scene
     // Update 
     update()
     {
-        // speed = distance / time 
-        const speed = 8;
-        
+        this.playerMove(8);        
+    }
+
+    playerMove(speed: number) 
+    {
         if(this.cursorKeys.right.isDown) 
         {
             if(this.squareSprite.x <= this.WindowSettings.boundaryRight)
