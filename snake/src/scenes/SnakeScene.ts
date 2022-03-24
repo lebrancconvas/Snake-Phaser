@@ -1,17 +1,12 @@
 import Phaser from 'phaser'
+import { GameSettings } from '../settings/GameSettings';
 
 export default class SnakeScene extends Phaser.Scene
 {
-    // private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys = this.input.keyboard.createCursorKeys();
-    private squareSprite;
-    private foodSprite;
+    // Variable Init 
+    private squareSprite?;
+    private foodSprite?;
     private cursorKeys!: Phaser.Types.Input.Keyboard.CursorKeys;
-    private WindowSettings = {
-        boundaryLeft: 10,
-        boundaryRight: 790,
-        boundaryUp: 10,
-        boundaryDown: 590
-    };
 
 	constructor()
 	{
@@ -39,35 +34,62 @@ export default class SnakeScene extends Phaser.Scene
         this.foodSprite = this.add.rectangle(foodX, foodY, 20, 20, 0x00ff00);
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
+
+        // this.physics.add.collider(this.squareSprite, this.foodSprite, function(squareSprite, foodSprite) {
+        //     foodSprite.destroy();
+        //     // foodSprite = this.add.rectangle(foodX, foodY, 20, 20, 0x00ff00);
+        // })   
     }
 
     // Update 
     update()
     {
-        this.playerMove(8);        
+        this.playerMove(GameSettings.playerSpeed);  
+         
     }
 
     playerMove(speed: number) 
     {
         if(this.cursorKeys.right.isDown) 
         {
-            if(this.squareSprite.x <= this.WindowSettings.boundaryRight)
+            if(this.squareSprite.x <= GameSettings.boundaryRight)
                 this.squareSprite.x += speed;
         }
         else if(this.cursorKeys.left.isDown)
         {
-            if(this.squareSprite.x >= this.WindowSettings.boundaryLeft)
+            if(this.squareSprite.x >= GameSettings.boundaryLeft)
                 this.squareSprite.x -= speed;
         }
         else if(this.cursorKeys.up.isDown)
         {
-            if(this.squareSprite.y >= this.WindowSettings.boundaryUp)
+            if(this.squareSprite.y >= GameSettings.boundaryUp)
                 this.squareSprite.y -= speed;
         }
         else if(this.cursorKeys.down.isDown)
         {
-            if(this.squareSprite.y <= this.WindowSettings.boundaryDown)
+            if(this.squareSprite.y <= GameSettings.boundaryDown)
                 this.squareSprite.y += speed;
         }
+    }
+
+    generateNewFood() 
+    {
+        const foodX = Phaser.Math.Between(10, 790);
+        const foodY = Phaser.Math.Between(10, 590);
+
+        if(this.isFoodEaten()) 
+        {
+            this.foodSprite.destroy();
+            this.foodSprite = this.add.rectangle(foodX, foodY, 20, 20, 0x00ff00);
+        }
+    }
+
+    isFoodEaten(): boolean 
+    {
+        if(this.squareSprite.y === this.foodSprite.x && this.squareSprite.y === this.foodSprite.y) 
+        {
+            return true;
+        }
+        return false;
     }
 }
