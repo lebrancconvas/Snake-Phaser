@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { GameSettings } from '../settings/GameSettings';
-import { Config } from '../settings/Config';
+import { SFXConfig } from '../settings/SFXConfig';
 
 export default class SnakeScene extends Phaser.Scene
 {
@@ -23,24 +23,13 @@ export default class SnakeScene extends Phaser.Scene
     // Preload 
 	preload()
     {
-        this.load.bitmapFont("pixelFont", "./assets/font/Zuno/font.png", "./assets/font/Zuno/font.xml");
-        this.load.audio("eating", "./assets/audio/sfx/Collect_02.mp3");
+        
     }
 
     // Create 
     create()
     {
         this.score = 0;
-
-        this.audioConfig = {
-            mute: false,
-            volume: 0.5,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: false,
-            delay: 0
-        }
 
         this.eatingSound = this.sound.add('eating');
 
@@ -69,7 +58,7 @@ export default class SnakeScene extends Phaser.Scene
             this.foodSprite.x = newFoodX;
             this.foodSprite.y = newFoodY;
 
-            this.eatingSound.play(this.audioConfig);
+            this.eatingSound.play(SFXConfig);
 
             this.score++;
 
@@ -81,6 +70,7 @@ export default class SnakeScene extends Phaser.Scene
     update()
     {
         this.playerMove(GameSettings.playerSpeed);
+        this.checkGameOver();
     }
 
     /* Method */
@@ -109,19 +99,11 @@ export default class SnakeScene extends Phaser.Scene
         }
     }
 
-    generateNewFood(squareSprite, foodSprite) 
+    checkGameOver() 
     {
-        this.squareSprite = squareSprite;
-        this.foodSprite = foodSprite;
-
-        const newFoodX: number = Phaser.Math.Between(10, 790);
-        const newFoodY: number = Phaser.Math.Between(10, 590);
-    
-        this.foodSprite.x = newFoodX;
-        this.foodSprite.y = newFoodY;
-
-        this.score++;
-
-        // console.log(this.score);
+        if(this.squareSprite.x <= 10 || this.squareSprite.x >= 790 || this.squareSprite.y <= 10 || this.squareSprite.y >= 590)
+        {
+            this.scene.start('gameover');
+        }
     }
 }
